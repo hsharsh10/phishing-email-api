@@ -1,63 +1,1033 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Phishing Email Detector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Email Detector - AI-Powered Security</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
-            background: #121212;
-            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(118, 75, 162, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .header {
             text-align: center;
-            padding: 40px;
+            margin-bottom: 3rem;
         }
+
+        .logo {
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo svg {
+            width: 80px;
+            height: 80px;
+            stroke: url(#gradient);
+            stroke-width: 2;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Main Card */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        /* Form Section */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            text-align: left;
+        }
+
         textarea {
-            width: 70%;
-            height: 150px;
-            padding: 10px;
-            font-size: 16px;
+            width: 100%;
+            min-height: 200px;
+            padding: 1.25rem;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            color: var(--text-primary);
+            resize: vertical;
+            transition: all 0.3s ease;
+            line-height: 1.6;
         }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Button */
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
         button {
-            padding: 10px 30px;
-            margin-top: 20px;
-            font-size: 18px;
+            flex: 1;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 12px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .result {
-            margin-top: 30px;
-            font-size: 22px;
-            font-weight: bold;
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Results Section */
+        .results {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .result-icon {
+            font-size: 2rem;
+        }
+
+        .result-phishing {
+            color: #f56565;
+        }
+
+        .result-legit {
+            color: #48bb78;
+        }
+
+        .confidence-container {
+            margin-top: 1.5rem;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .confidence-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease-out;
+            position: relative;
+        }
+
+        .confidence-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .confidence-phishing {
+            background: linear-gradient(90deg, #f56565, #fc8181);
+        }
+
+        .confidence-legit {
+            background: linear-gradient(90deg, #48bb78, #68d391);
+        }
+
+        /* Error Message */
+        .error {
+            background: rgba(245, 101, 101, 0.1);
+            border: 1px solid rgba(245, 101, 101, 0.3);
+            color: #fc8181;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .error-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Examples Section */
+        .examples {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .examples-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .example-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        /* About Section */
+        .about-section {
+            margin-top: 3rem;
+        }
+
+        .about-toggle {
+            width: 100%;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .about-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .about-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .about-content.open {
+            max-height: 2000px;
+        }
+
+        .about-inner {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            margin-top: -12px;
+        }
+
+        .about-inner h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .about-inner h3:first-child {
+            margin-top: 0;
+        }
+
+        .about-inner p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .about-inner ul {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-inner li {
+            margin-bottom: 0.5rem;
+        }
+
+        .about-inner code {
+            background: rgba(102, 126, 234, 0.15);
+            color: #a5b4fc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-item strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .example-buttons {
+                flex-direction: column;
+            }
+
+            .example-btn {
+                width: 100%;
+            }
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
+
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none"
+                    stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <h1>Phishing Email Detector</h1>
+            <p class="subtitle">AI-Powered Email Security Analysis</p>
+        </div>
 
-<h1>🛡 Phishing Email Detector</h1>
+        <!-- Main Card -->
+        <div class="card">
+            <div class="form-group">
+                <label for="emailText">Email Content</label>
+                <textarea id="emailText"
+                    placeholder="Paste the email content here to analyze...&#10;&#10;Example:&#10;Dear valued customer,&#10;Your account has been compromised. Click here immediately to verify your identity..."
+                    aria-label="Email content to analyze"></textarea>
+            </div>
 
-<textarea id="email" placeholder="Paste email text here..."></textarea><br>
-<button onclick="checkEmail()">Check Email</button>
+            <div class="btn-container">
+                <button class="btn-primary" id="analyzeBtn" onclick="analyzeEmail()">
+                    Analyze Email
+                </button>
+                <button class="btn-secondary" onclick="clearForm()">
+                    Clear
+                </button>
+            </div>
 
-<div class="result" id="result"></div>
+            <!-- Results -->
+            <div id="resultsContainer" class="hidden"></div>
 
-<script>
-async function checkEmail() {
-    const emailText = document.getElementById("email").value;
+            <!-- Error -->
+            <div id="errorContainer" class="hidden"></div>
+        </div>
 
-    const response = await fetch("http://127.0.0.1:8000/predict", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email_text: emailText
-        })
-    });
+        <!-- Examples -->
+        <div class="examples">
+            <div class="examples-title">Try an example:</div>
+            <div class="example-buttons">
+                <button class="example-btn" onclick="loadExample('phishing')">
+                    Phishing Example
+                </button>
+                <button class="example-btn" onclick="loadExample('legit')">
+                    Legitimate Example
+                </button>
+            </div>
+        </div>
 
-    const data = await response.json();
+        <!-- About Section -->
+        <div class="about-section">
+            <button class="about-toggle" onclick="toggleAbout()">
+                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    About This Project
+                </span>
+                <span class="toggle-icon" id="toggleIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </span>
+            </button>
+            <div class="about-content" id="aboutContent">
+                <div class="about-inner">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                        Project Overview
+                    </h3>
+                    <p>
+                        This is an <strong>AI-powered phishing email detection system</strong> that uses deep learning
+                        to analyze email content and determine whether it's a phishing attempt or legitimate
+                        communication.
+                        The system leverages a trained LSTM (Long Short-Term Memory) neural network model to identify
+                        suspicious patterns and characteristics commonly found in phishing emails.
+                    </p>
 
-    document.getElementById("result").innerHTML =
-        "Result: " + data.prediction + "<br>Confidence: " + data.confidence;
-}
-</script>
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z">
+                            </path>
+                            <path d="M5 3v4"></path>
+                            <path d="M19 17v4"></path>
+                            <path d="M3 5h4"></path>
+                            <path d="M17 19h4"></path>
+                        </svg>
+                        Key Features
+                    </h3>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <strong style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 8V4H8"></path>
+                                    <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+                                    <path d="M2 14h2"></path>
+                                    <path d="M20 14h2"></path>
+                                    <path d="M15 13v2"></path>
+                                    <path d="M9 13v2"></path>
+                                </svg>
+                                AI-Powered Detection
+                            </strong>
+                            <p>Uses deep learning LSTM model trained on phishing and legitimate email datasets</p>
+                        </div>
+                        <div class="feature-item">
+                            <strong style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                </svg>
+                                Real-Time Analysis
+                            </strong>
+                            <p>Instant email analysis with confidence scores</p>
+                        </div>
+                        <div class="feature-item">
+                            <strong style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="12" y1="20" x2="12" y2="10"></line>
+                                    <line x1="18" y1="20" x2="18" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                                </svg>
+                                Confidence Metrics
+                            </strong>
+                            <p>Visual confidence meter showing prediction certainty</p>
+                        </div>
+                        <div class="feature-item">
+                            <strong style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                                    <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                                    <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                                    <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                                </svg>
+                                Modern Interface
+                            </strong>
+                            <p>Beautiful, responsive UI with smooth animations</p>
+                        </div>
+                    </div>
 
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        How It Works
+                    </h3>
+                    <p>The detection process follows these steps:</p>
+                    <ul>
+                        <li><strong>Text Processing:</strong> Email content is tokenized and converted into numerical
+                            sequences</li>
+                        <li><strong>Sequence Padding:</strong> Sequences are padded to a fixed length (1000 tokens) for
+                            model input</li>
+                        <li><strong>LSTM Analysis:</strong> The deep learning model analyzes patterns and linguistic
+                            features</li>
+                        <li><strong>Prediction:</strong> Model outputs a probability score (0-1)</li>
+                        <li><strong>Classification:</strong> Emails with score ≥ 0.5 are classified as PHISHING,
+                            otherwise LEGIT</li>
+                    </ul>
+
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
+                            </path>
+                            <path
+                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
+                            </path>
+                            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+                            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+                        </svg>
+                        Usage Instructions
+                    </h3>
+                    <p><strong>Step 1: Start the Backend API</strong></p>
+                    <p>Open a terminal and run:</p>
+                    <ul>
+                        <li><code>cd /path/to/phishing-email-api</code></li>
+                        <li><code>uvicorn main:app --reload</code></li>
+                        <li>The API will start on <code>http://127.0.0.1:8000</code></li>
+                    </ul>
+
+                    <p><strong>Step 2: Analyze Emails</strong></p>
+                    <ul>
+                        <li>Paste email content into the textarea above</li>
+                        <li>Click "Analyze Email" or press <code>Ctrl+Enter</code></li>
+                        <li>View the prediction result and confidence score</li>
+                        <li>Try the example buttons for quick testing</li>
+                    </ul>
+
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                            </path>
+                        </svg>
+                        Technical Stack
+                    </h3>
+                    <div>
+                        <span class="tech-badge">Python</span>
+                        <span class="tech-badge">FastAPI</span>
+                        <span class="tech-badge">TensorFlow</span>
+                        <span class="tech-badge">Keras</span>
+                        <span class="tech-badge">LSTM</span>
+                        <span class="tech-badge">HTML5</span>
+                        <span class="tech-badge">CSS3</span>
+                        <span class="tech-badge">JavaScript</span>
+                    </div>
+
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v4"></path>
+                            <path d="M12 18v4"></path>
+                            <path d="M4.93 4.93 7.76 7.76"></path>
+                            <path d="M16.24 16.24l2.83 2.83"></path>
+                            <path d="M2 12h4"></path>
+                            <path d="M18 12h4"></path>
+                            <path d="M4.93 19.07 7.76 16.24"></path>
+                            <path d="M16.24 7.76l2.83-2.83"></path>
+                        </svg>
+                        API Information
+                    </h3>
+                    <p><strong>Endpoint:</strong> <code>POST /predict</code></p>
+                    <p><strong>Request Body:</strong></p>
+                    <ul>
+                        <li><code>email_text</code> (string): The email content to analyze</li>
+                    </ul>
+                    <p><strong>Response:</strong></p>
+                    <ul>
+                        <li><code>prediction</code> (string): "PHISHING" or "LEGIT"</li>
+                        <li><code>confidence</code> (float): Probability score between 0 and 1</li>
+                    </ul>
+
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <line x1="10" y1="9" x2="8" y2="9"></line>
+                        </svg>
+                        Model Details
+                    </h3>
+                    <p>
+                        The LSTM model (<code>phishing_lstm_model.h5</code>) is trained to recognize patterns in email
+                        text
+                        that are indicative of phishing attempts, such as urgency tactics, suspicious links, requests
+                        for
+                        personal information, and other common phishing characteristics. The tokenizer
+                        (<code>tokenizer.pkl</code>)
+                        converts text into numerical sequences that the model can process.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Powered by Deep Learning LSTM Model • Built with FastAPI</p>
+        </div>
+    </div>
+
+    <script>
+        const API_ENDPOINT = 'http://127.0.0.1:8000/predict';
+
+        const examples = {
+            phishing: `URGENT: Your Account Has Been Suspended!
+
+Dear Valued Customer,
+
+We have detected suspicious activity on your account. Your account will be permanently closed within 24 hours unless you verify your identity immediately.
+
+Click here to verify now: http://suspicious-link.com/verify
+
+If you do not respond within 24 hours, your account and all associated funds will be permanently deleted.
+
+Best regards,
+Security Team`,
+
+            legit: `Monthly Newsletter - January 2026
+
+Hello,
+
+Thank you for being a valued subscriber. Here's what's new this month:
+
+• New features released in our latest update
+• Upcoming webinar on security best practices
+• Customer success stories
+
+You can manage your subscription preferences in your account settings.
+
+Best regards,
+The Team`
+        };
+
+        async function analyzeEmail() {
+            const emailText = document.getElementById('emailText').value.trim();
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const errorContainer = document.getElementById('errorContainer');
+
+            // Clear previous results
+            resultsContainer.classList.add('hidden');
+            errorContainer.classList.add('hidden');
+
+            // Validation
+            if (!emailText) {
+                showError('Please enter email content to analyze.');
+                return;
+            }
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<span class="spinner"></span>Analyzing...';
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email_text: emailText
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                showError(`Analysis failed: ${error.message}. Please ensure the API server is running.`);
+            } finally {
+                // Reset button
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = 'Analyze Email';
+            }
+        }
+
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const isPhishing = data.prediction === 'PHISHING';
+            const confidencePercent = (data.confidence * 100).toFixed(1);
+
+            resultsContainer.innerHTML = `
+                <div class="results">
+                    <div class="result-header">
+                        <div class="result-label ${isPhishing ? 'result-phishing' : 'result-legit'}">
+                            <span class="result-icon">
+                                ${isPhishing ?
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>' :
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'}
+                            </span>
+                            <span>${data.prediction}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="confidence-container">
+                        <div class="confidence-label">
+                            <span>Confidence Level</span>
+                            <span class="confidence-value">${confidencePercent}%</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill ${isPhishing ? 'confidence-phishing' : 'confidence-legit'}" 
+                                 style="width: ${confidencePercent}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `
+                <div class="error">
+                    <span class="error-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </span>
+                    <span>${message}</span>
+                </div>
+            `;
+            errorContainer.classList.remove('hidden');
+        }
+
+        function clearForm() {
+            document.getElementById('emailText').value = '';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('errorContainer').classList.add('hidden');
+        }
+
+        function loadExample(type) {
+            document.getElementById('emailText').value = examples[type];
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('errorContainer').classList.add('hidden');
+        }
+
+        // Keyboard shortcut: Ctrl/Cmd + Enter to analyze
+        document.getElementById('emailText').addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                analyzeEmail();
+            }
+        });
+
+        // Toggle About section
+        function toggleAbout() {
+            const content = document.getElementById('aboutContent');
+            const icon = document.getElementById('toggleIcon');
+
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+    </script>
 </body>
+
 </html>
+```
